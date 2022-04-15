@@ -1,8 +1,8 @@
 import telebot
+from goods import goods_name
 
 bot=telebot.TeleBot('5177554108:AAGKqa3q77Q1pgC4EOrMA9N8RMwcGfvsYsc')
 
-goods_name = {'Elf Bar Classic 1500 Blueberry':20,'Elf Bar Classic 1500 Mango':20,'Elf Bar Classic 1500 Grape':20,'Elf Bar Classic 1500 Banana ice':20,'Elf Bar Classic 1500 Spearmint':20,'Elf Bar Classic 1500 Watermelon':20,'Elf Bar Classic 1500 Apple Peach':20,'Elf Bar Lux 1500 Red Bull Grape':20,'Elf Bar Lux 1500 Mango Peach Watermelon':20,'Elf Bar Lux 1500 Banana Milk':20}
 wait_updates_goods = 1000000000
 wait_new_count = 1000000000
 wait_goods = 1000000000
@@ -36,7 +36,10 @@ def update_goods(message):
 def update_goods(message):
 	new_count = message.text
 	global goods_name
-	goods_name[updates_goods] = new_count
+	goods_name[updates_goods] = int(new_count)
+	f = open('goods.py', 'w')
+	f.write(f'goods_name={goods_name}')
+	f.close()
 	markup = telebot.types.ReplyKeyboardMarkup(True)
 	back = telebot.types.KeyboardButton('↩️ Назад')
 	markup.add(back)
