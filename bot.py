@@ -3,6 +3,8 @@ import telebot
 bot=telebot.TeleBot('5177554108:AAGKqa3q77Q1pgC4EOrMA9N8RMwcGfvsYsc')
 
 goods_name = {'Elf Bar Classic 1500 Blueberry':20,'Elf Bar Classic 1500 Mango':20,'Elf Bar Classic 1500 Grape':20,'Elf Bar Classic 1500 Banana ice':20,'Elf Bar Classic 1500 Spearmint':20,'Elf Bar Classic 1500 Watermelon':20,'Elf Bar Classic 1500 Apple Peach':20,'Elf Bar Lux 1500 Red Bull Grape':20,'Elf Bar Lux 1500 Mango Peach Watermelon':20,'Elf Bar Lux 1500 Banana Milk':20}
+wait_updates_goods = 1000000000
+wait_new_count = 1000000000
 wait_goods = 1000000000
 wait_fullname = 1000000000
 wait_count = 1000000000
@@ -15,6 +17,30 @@ def start(message):
     item2 = telebot.types.KeyboardButton('💨 ELF BAR Lux 1500')
     markup.add(item1,item2)
     bot.send_message(message.chat.id,'Шановний відвідувач, ми є оптовими постачальниками одноразових електронних сигарет ELF BAR 1500💨\n\nНаші переваги серед конкурентів:\n- гарантуємо якість та надійність📌\n- тільки оригінал✨\n- найдешевші ціни на 🇺🇦 ринку\n- бонуси та знижки постійним клієнтам 🎁\n\nМи раді, що ви з нами!🥰',reply_markup=markup)
+@bot.message_handler(commands=['update_goods'])
+def update_goods(message):
+	global wait_updates_goods
+	wait_updates_goods = message.message_id
+	markup_goods = telebot.types.ReplyKeyboardMarkup(True)
+	for i in goods_name:
+		markup_goods.add(i)
+	bot.send_message(message.chat.id,'📃 Виберіть модель для редакції кількості товару',reply_markup=markup_goods)
+@bot.message_handler(func=lambda message: wait_updates_goods+2==message.message_id, content_types=['text'])
+def update_goods(message):
+	global wait_new_count
+	wait_new_count = message.message_id
+	global updates_goods
+	updates_goods = message.text
+	bot.send_message(message.chat.id,'📃 Введіть нову кількість товару',reply_markup=None)
+@bot.message_handler(func=lambda message: wait_new_count+2==message.message_id, content_types=['text'])
+def update_goods(message):
+	new_count = message.text
+	global goods_name
+	goods_name[updates_goods] = new_count
+	markup = telebot.types.ReplyKeyboardMarkup(True)
+	back = telebot.types.KeyboardButton('↩️ Назад')
+	markup.add(back)
+	bot.send_message(message.chat.id,'✅ Дані редаговані',reply_markup=markup)
 @bot.message_handler(regexp='💵 Купити|💸 Купити')
 def get_order(message):
     global wait_goods
